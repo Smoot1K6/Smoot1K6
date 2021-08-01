@@ -1,0 +1,56 @@
+# Program File: mod5Prob1Main.s
+# Author: Amber Mills
+# Date: 07/07/2021
+# Program to read an integer number, temperature from a user, and
+# Convert from Celsius -> Fahrenheit
+# And print to console
+# Inputs:
+#   - userInput: Temperature in Celsius (Assume celsius goes from 0-99 degrees)
+# Outputs:
+#   - convertedMessage: Converted temperature in Celsius
+
+.text
+.global main
+
+main:
+                    #Save return to OS on stack
+  SUB sp, sp, #4
+  STR lr, sp, #0
+                    # Prompt user for input
+  LDR r0, =temperaturePrompt
+  BL printf
+
+                    # Read the input and save it in r1 (Scanf)
+  LDR r0, =format1
+  LDR r1, =userInput
+  SUB sp, sp, #4
+  MOV r1, sp
+  BL scanf
+  LDR r0, [sp, #0]
+  ADD sp, sp, #4
+                    # Convert using F = (9C + 160) /5
+  MUL r1, r1, 9
+  MOV r1, sp
+  LDR r0, [sp, #0]
+  ADD sp, sp, 160
+  LDR r1
+
+
+
+                    # Output the number
+  LDR r1, =convertedMessage
+  BL printf
+                    # Exit the program
+LDR lr, [sp, #0]
+ADD sp, sp, #4
+MOV pc, lr
+
+  .data
+    # Tells the user what temperature conversion is
+    convertedMessage: .asciz "\nThe temperature in F is %d\n"
+    #Format of user input
+    format1: .asciz "%d"
+    # Takes the user input for the conversion calculation
+    userInput: .asciz "%d"
+    # Prompts the user to enter in the temperature in Fahrenheit
+    temperaturePrompt: .asciz "Please enter a temperature in Celsius (only 2 digits): \n"
